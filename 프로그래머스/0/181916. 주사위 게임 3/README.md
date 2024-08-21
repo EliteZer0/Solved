@@ -1,10 +1,10 @@
 # [level 0] 주사위 게임 3 - 181916 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181916) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181916#) 
 
 ### 성능 요약
 
-메모리: 76.3 MB, 시간: 0.79 ms
+메모리: 73.7 MB, 시간: 0.58 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 08월 21일 10:21:48
+2024년 08월 21일 10:47:18
 
 ### 문제 설명
 

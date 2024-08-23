@@ -20,16 +20,10 @@ public class Main {
 		int[] dp = new int[n+1];
 		for (int i = 0; i < n; i++) {
 			if(i+time[i]<=n) {
-				if(dp[i+time[i]]> dp[i]+price[i]) {
-					dp[i+time[i]] = dp[i+time[i]];
-				}else {
-					dp[i+time[i]] = dp[i]+price[i];
-				}
-//				dp[i+time[i]] = Math.max(dp[i+time[i]], dp[i]+price[i]);
+				dp[i+time[i]] = Math.max(dp[i+time[i]], dp[i]+price[i]);
 			}
 			dp[i+1] = Math.max(dp[i+1], dp[i]);
 		}
-//		System.out.println(Arrays.toString(dp));
 		System.out.println(dp[n]);
 	}
 }

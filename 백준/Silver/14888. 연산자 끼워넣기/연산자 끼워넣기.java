@@ -17,48 +17,48 @@ public class Main {
 		for (int i = 0; i < n; i++) {
 			nums[i] = Integer.parseInt(st.nextToken());
 		}
-		int[] inequalityCnt = new int[4];
+		int[] operatorsCnt = new int[4];
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < 4; i++) {
-			inequalityCnt[i] = Integer.parseInt(st.nextToken());
+			operatorsCnt[i] = Integer.parseInt(st.nextToken());
 		}
-		ArrayList<Character> addInequality = new ArrayList<>();
-		for (int i = 0; i < inequalityCnt[0]; i++) {
-			addInequality.add('+');
+		ArrayList<Character> addOperators = new ArrayList<>();
+		for (int i = 0; i < operatorsCnt[0]; i++) {
+			addOperators.add('+');
 		}
-		for (int i = 0; i < inequalityCnt[1]; i++) {
-			addInequality.add('-');
+		for (int i = 0; i < operatorsCnt[1]; i++) {
+			addOperators.add('-');
 		}
-		for (int i = 0; i < inequalityCnt[2]; i++) {
-			addInequality.add('*');
+		for (int i = 0; i < operatorsCnt[2]; i++) {
+			addOperators.add('*');
 		}
-		for (int i = 0; i < inequalityCnt[3]; i++) {
-			addInequality.add('/');
+		for (int i = 0; i < operatorsCnt[3]; i++) {
+			addOperators.add('/');
 		}
 		int size = 0;
-		char[] inequality = new char[addInequality.size()];
-		for(char temp : addInequality) {
-			inequality[size++] = temp;
+		char[] operators = new char[addOperators.size()];
+		for(char c : addOperators) {
+			operators[size++] = c;
 		}
-		permutation(nums, inequality, 0, inequality.length, inequality.length);
+		permutation(nums, operators, 0, operators.length);
 		System.out.println(max);
     	System.out.println(min);
 	}
 	
-	static void permutation(int[] nums, char[] inequality, int depth, int n, int r) {
-	    if (depth == r) {
+	static void permutation(int[] nums, char[] operators, int depth, int n) {
+	    if (depth == n) {
 	    	int[] claNums = Arrays.copyOf(nums, nums.length);
-	    	for (int i = 0; i < inequality.length; i++) {
-				if(inequality[i] == '+') {
+	    	for (int i = 0; i < operators.length; i++) {
+				if(operators[i] == '+') {
 					claNums[i+1] = claNums[i]+claNums[i+1];
 				}
-				if(inequality[i] == '-') {
+				if(operators[i] == '-') {
 					claNums[i+1] = claNums[i]-claNums[i+1];
 				}
-				if(inequality[i] == '*') {
+				if(operators[i] == '*') {
 					claNums[i+1] = claNums[i]*claNums[i+1];
 				}
-				if(inequality[i] == '/') {
+				if(operators[i] == '/') {
 					if(claNums[i] < 0) {
 						claNums[i+1] = -((-claNums[i])/claNums[i+1]);
 					}else {
@@ -66,21 +66,21 @@ public class Main {
 					}
 				}
 			}
-	    	max = Math.max(max, claNums[inequality.length]);
-	    	min = Math.min(min, claNums[inequality.length]);
+	    	max = Math.max(max, claNums[operators.length]);
+	    	min = Math.min(min, claNums[operators.length]);
 	        return;
 	    }
 	 
 	    for (int i=depth; i<n; i++) {
-	        swap(inequality, depth, i);
-	        permutation(nums, inequality, depth + 1, n, r);
-	        swap(inequality, depth, i);
+	        swap(operators, depth, i);
+	        permutation(nums, operators, depth + 1, n);
+	        swap(operators, depth, i);
 	    }
 	}
 	 
-	static void swap(char[] inequality, int depth, int i) {
-	    char temp = inequality[depth];
-	    inequality[depth] = inequality[i];
-	    inequality[i] = temp;
+	static void swap(char[] operators, int depth, int i) {
+	    char c = operators[depth];
+	    operators[depth] = operators[i];
+	    operators[i] = c;
 	}
 }

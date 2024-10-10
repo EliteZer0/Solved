@@ -22,11 +22,14 @@ public class Main {
         }
         
         int[] time = new int[N+1];
+        int[] totalTime = new int[N+1];
         // 그래프 각 노드별 인접한 노드정보 초기화
         for (int i = 1; i < N+1; i++) {
         	st = new StringTokenizer(br.readLine());
         	//소요 시간 입력
-        	time[i] = Integer.parseInt(st.nextToken());
+        	int buildTime = Integer.parseInt(st.nextToken());
+        	time[i] = buildTime;
+        	totalTime[i] = buildTime;
 //        	System.out.println("time : " + time[i]);
         	
         	while(st.hasMoreTokens()) {
@@ -51,16 +54,13 @@ public class Main {
                 que.offer(i);
             }
         }
-        //동시에 건설할 수 있기 때문에 건물을 짓는데 걸리는 전체 시간을 저장할 배열 깊은 복사로 생성
-        int[] totalTime = new int[N+1];
-        totalTime = time.clone();
         // 큐가 빌 때까지 반복
         while (!que.isEmpty()) {
             // 큐에서 노드번호 꺼내기
             int nodeNo = que.poll();
 //            System.out.println("node NO : " + nodeNo);
             // 꺼낸 노드의 인접한 노드들 찾기
-            ArrayList<Integer> adjNodes = new ArrayList<>(graph.get(nodeNo));
+            ArrayList<Integer> adjNodes = graph.get(nodeNo);
             int size = adjNodes.size();
 //            System.out.println("size : " + size);
             // 인접한 노드의 개수만큼 반복문 실행
@@ -81,6 +81,6 @@ public class Main {
 			sb.append(totalTime[i]).append("\n");
 		}
         
-        System.out.println(sb.toString());
+        System.out.print(sb.toString());
     }
 }

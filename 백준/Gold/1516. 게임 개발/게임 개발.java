@@ -61,18 +61,16 @@ public class Main {
 //            System.out.println("node NO : " + nodeNo);
             // 꺼낸 노드의 인접한 노드들 찾기
             ArrayList<Integer> adjNodes = graph.get(nodeNo);
-            int size = adjNodes.size();
-//            System.out.println("size : " + size);
             // 인접한 노드의 개수만큼 반복문 실행
-            for (int i = 0; i < size; i++) {
+            for (int adjNode : adjNodes) {
                 // 인접한 노드 진입차수 갱신
 //            	System.out.println("인접 노드 : " + ajdNodes.get(i));
-                edgeCount[adjNodes.get(i)] -- ;
+                edgeCount[adjNode] -- ;
                 // 인접 노드 시간에 시간 더하기. DP로 비교함.
-                totalTime[adjNodes.get(i)] = Math.max(totalTime[adjNodes.get(i)], totalTime[nodeNo] + time[adjNodes.get(i)]);
+                totalTime[adjNode] = Math.max(totalTime[adjNode], totalTime[nodeNo] + time[adjNode]);
                 // 갱신된 노드의 진입차수가 0이면 큐에 노드 넣기
-                if (edgeCount[adjNodes.get(i)] == 0) {
-                    que.offer(adjNodes.get(i));
+                if (edgeCount[adjNode] == 0) {
+                    que.offer(adjNode);
                 }
             }
         }

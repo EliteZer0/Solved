@@ -40,61 +40,22 @@ public class Main {
 			}
 		}
 		
-		int sToE = startToEnd();
-		int sWithU = userWithUmb();
+		int answer = bfs();
 		
-		if(sToE != -1 && sWithU != -1) {
-			System.out.println(Math.min(sToE, sWithU));
-		}
-		else if(sToE != -1 && sWithU == -1) {
-			System.out.println(sToE);
-		}
-		else if(sToE == -1 && sWithU != -1) {
-			System.out.println(sWithU);
-		}
-		else {
-			System.out.println(-1);
-		}
+		System.out.println(answer);
 	}
 	
 	static int[] dr = {-1, 1, 0, 0};
 	static int[] dc = {0, 0, -1, 1};
 	
-	private static int startToEnd() {
-		boolean[][] visited = new boolean[N][N];
-		Queue<UserInfo> q = new LinkedList<>();
-		q.add(start);
-		
-		while(!q.isEmpty()) {
-			UserInfo user = q.poll();
-			int r = user.r;
-			int c = user.c;
-			int hp = user.hp;
-			int distance = user.distance;
-			
-			for (int d = 0; d < 4; d++) {
-				int cr = r+dr[d];
-				int cc = c+dc[d];
-				int chp = hp-1;
-				
-				if(!check(cr, cc)) continue;
-				if(visited[cr][cc]) continue; 
-				if(chp == 0 && map[cr][cc] != 'E') continue;
-				if(map[cr][cc] == 'E') {
-					return distance+1;
-				}
-				q.offer(new UserInfo(cr, cc, chp, 0, distance+1));
-				visited[cr][cc] = true;
-			}
-		}
-		return -1;
-	}
-	
-	private static int userWithUmb() {
-		//2차원으로 두고 조건문 처리 해보고, 3차원으로도 시도해봤는데 안 돼서 4차원으로 하니까 메모리 초과
-		//3차원으로 두고 우산 가지고 있는지를 0, 1로 표현해봄
+	private static int bfs() {
+		//4차원으로 하니까 메모리 초과
+		// boolean[][][][] visited = new boolean[N][N][H + 1][D + 1];
+		//3차원으로 두고 우산 가지고 있는지
+		// boolean[][][] visited = new boolean[N][N][2];
 		//근데 67퍼에서 틀리네...
 		//visited 대신 체력+우산 내구도 저장하는 int 배열 사용해봄
+
 		int[][] check = new int[N][N];
 	    Queue<UserInfo> q = new LinkedList<>();
 	    q.add(start);

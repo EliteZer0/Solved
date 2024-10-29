@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 //이렇게 진행하니 수의 범위가 커버가 안됨.
 //선분의 시작점과 끝점을 받는 클래스를 트리셋으로 받아서 진행.
 //트리셋이 생각했던 것만큼 빠르게 진행이 안 돼서 리스트로 바꿔서 진행
+//메모리 3000 시간 50 정도 감소
 class Segment implements Comparable<Segment> {
     int start, end;
 
@@ -44,7 +45,8 @@ public class Main {
 			segments.add(new Segment(start, end));
 		}
 		
-		Collections.sort(segments);
+		//Collections.sort(segments);
+		//정렬할 필요가 없음. 애초에 정렬을 해서 준다고 문제에 적혀있음.
 		//시작점 설정
 		int start = segments.get(0).start;
 		int end = segments.get(0).end;

@@ -12,23 +12,55 @@ import java.util.StringTokenizer;
 //이렇게 진행하니 수의 범위가 커버가 안됨.
 //선분의 시작점과 끝점을 받는 클래스를 트리셋으로 받아서 진행.
 //트리셋이 생각했던 것만큼 빠르게 진행이 안 돼서 리스트로 바꿔서 진행
-//선분 병합 로직 자체를 단순화 해봄
+//클래스 삭제 후 선분 병합 로직 자체를 단순화 해봄
+//입력 매서드를 생성해봄
+//오히려 메모리와 시간 증가. 의미 없음.
 
 public class Main {
+	
+	private static byte[] buffer = new byte[1 << 16];
+    private static int bufferPointer = 0, bytesRead = 0;
+
+    private static int read() throws IOException {
+        if (bufferPointer == bytesRead) {
+            bufferPointer = 0;
+            bytesRead = System.in.read(buffer);
+            if (bytesRead == -1) return -1;
+        }
+        return buffer[bufferPointer++];
+    }
+
+    private static int nextInt() throws IOException {
+        int result = 0;
+        int c = read();
+        
+        // 공백 문자를 건너뜁니다.
+        while (c <= ' ') c = read();
+        
+        // 양수 또는 음수 판별
+        boolean negative = (c == '-');
+        if (negative) c = read();
+
+        // 숫자 부분 읽기
+        do {
+            result = result * 10 + (c - '0');
+            c = read();
+        } while (c >= '0' && c <= '9');
+        
+        return negative ? -result : result;
+    }
+	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+		int n = nextInt();
 		
-		int n = Integer.parseInt(br.readLine());
-		
-		int start = Integer.MIN_VALUE;
-		int end = Integer.MIN_VALUE;
+		//시작점 설정
+		int start = nextInt();
+		int end = nextInt();
 		int length = 0;
 		
-		for (int i = 0; i < n; i++) {
-			st = new StringTokenizer(br.readLine());
-			int curStart = Integer.parseInt(st.nextToken());
-			int curEnd = Integer.parseInt(st.nextToken());
+		for (int i = 1; i < n; i++) {
+			int curStart = nextInt();
+			int curEnd = nextInt();
 			
 			//새로 뽑은 선분과 이전 선분의 범위가 겹치면
 			if(curStart <= end) {
@@ -37,9 +69,7 @@ public class Main {
 			} 
 			//겹치지 않으면
 			else {
-				if(start != Integer.MIN_VALUE) {
-					length += end-start;
-				}
+				length += end-start;
 				//시작 위치 새로 뽑은 선분의 시작위치로 갱신
 				start = curStart;
 				//끝나는 위치 새로 뽑은 선분의 끝나는 위치로 갱신
@@ -48,9 +78,7 @@ public class Main {
 		}
 		
 		//마지막 선분 길이까지 더해주기
-		if(start != Integer.MIN_VALUE) {
-			length += end-start;
-		}
+		length += end-start;
 		
 		System.out.println(length);
 	} 

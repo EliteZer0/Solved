@@ -9,7 +9,39 @@ import java.util.StringTokenizer;
 //유니온 파인드
 public class Main {
     static int[] parent;
+    
+    private static byte[] buffer = new byte[1 << 16];
+    private static int bufferPointer = 0, bytesRead = 0;
 
+    private static int read() throws IOException {
+        if (bufferPointer == bytesRead) {
+            bufferPointer = 0;
+            bytesRead = System.in.read(buffer);
+            if (bytesRead == -1) return -1;
+        }
+        return buffer[bufferPointer++];
+    }
+
+    private static int nextInt() throws IOException {
+        int result = 0;
+        int c = read();
+        
+        // 공백 문자 건너뛰기
+        while (c <= ' ') c = read();
+        
+        // 양수 또는 음수 판별
+        boolean negative = (c == '-');
+        if (negative) c = read();
+
+        // 숫자 부분 읽기
+        do {
+            result = result * 10 + (c - '0');
+            c = read();
+        } while (c >= '0' && c <= '9');
+        
+        return negative ? -result : result;
+    }
+    
     // 부모 노드를 찾는 함수
     static int find(int x) {
         if (parent[x] == x)
@@ -29,10 +61,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        int n = nextInt();
+        int m = nextInt();
 
         // 부모 배열 초기화
         parent = new int[n];
@@ -42,9 +72,8 @@ public class Main {
 
         int result = 0;
         for (int i = 1; i <= m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+            int a = nextInt();
+            int b = nextInt();
 
             if (union(a, b)) {
                 result = i;

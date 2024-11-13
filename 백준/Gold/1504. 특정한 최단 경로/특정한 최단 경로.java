@@ -27,12 +27,9 @@ public class Main {
 	static int[] dis;
 	static boolean[] visited;
 	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		N = Integer.parseInt(st.nextToken());
-		E = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {		
+		N = nextInt();
+		E = nextInt();
 		
 		adjList = new ArrayList[N+1];
 		dis = new int[N+1];
@@ -44,18 +41,16 @@ public class Main {
 		Arrays.fill(dis, Integer.MAX_VALUE);
 		
 		for (int i = 0; i < E; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			int c = Integer.parseInt(st.nextToken());
+			int a = nextInt();
+			int b = nextInt();
+			int c = nextInt();
 			
 			adjList[a].add(new Node(b, c));
 			adjList[b].add(new Node(a, c));
 		}
 		
-		st = new StringTokenizer(br.readLine());
-		int v1 = Integer.parseInt(st.nextToken());
-		int v2 = Integer.parseInt(st.nextToken());
+		int v1 = nextInt();
+		int v2 = nextInt();
 		
 		dijkstra(1);
 		
@@ -142,6 +137,37 @@ public class Main {
 				}
 			}
 		}
-		
 	}
+	
+	private static byte[] buffer = new byte[1 << 16];
+    private static int bufferPointer = 0, bytesRead = 0;
+
+    private static int read() throws IOException {
+        if (bufferPointer == bytesRead) {
+            bufferPointer = 0;
+            bytesRead = System.in.read(buffer);
+            if (bytesRead == -1) return -1;
+        }
+        return buffer[bufferPointer++];
+    }
+
+    private static int nextInt() throws IOException {
+        int result = 0;
+        int c = read();
+        
+        // 공백 문자를 건너뜁니다.
+        while (c <= ' ') c = read();
+        
+        // 양수 또는 음수 판별
+        boolean negative = (c == '-');
+        if (negative) c = read();
+
+        // 숫자 부분 읽기
+        do {
+            result = result * 10 + (c - '0');
+            c = read();
+        } while (c >= '0' && c <= '9');
+        
+        return negative ? -result : result;
+    }
 }

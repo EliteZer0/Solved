@@ -6,61 +6,58 @@ import java.util.*;
 public class Main {
     private static final int END_MARKER = -1;
 
-    static class Building {
-        int time;
-        List<Integer> pre = new ArrayList<>();
-    }
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
 
         int N = Integer.parseInt(br.readLine());
-        Building[] buildings = new Building[N + 1];
-        int[] inDegree = new int[N+1];
-        int[] buildTime = new int[N+1];
+        int[] edgeCount = new int[N+1];
 
-        // 건물 정보 입력
-        for(int i = 1; i <= N; i++) {
-            buildings[i] = new Building();
-            st = new StringTokenizer(br.readLine());
-            buildings[i].time = Integer.parseInt(st.nextToken());
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
 
-            while(true) {
-                int preBuilding = Integer.parseInt(st.nextToken());
-                if(preBuilding == END_MARKER) break;
-                buildings[i].pre.add(preBuilding);
-                inDegree[i]++;
-            }
+        for (int i = 0; i <= N; i++) {
+            graph.add(new ArrayList<>());
         }
 
+        int[] buildTime = new int[N+1];
+        int[] totalBuildTime = new int[N+1];
+
+        for (int i = 1; i <= N; i++) {
+            st = new StringTokenizer(br.readLine());
+            int time = Integer.parseInt(st.nextToken());
+            buildTime[i] = time;
+            totalBuildTime[i] = time;
+
+            while(st.hasMoreTokens()) {
+                int adj = Integer.parseInt(st.nextToken());
+                if(adj == END_MARKER) break;
+                graph.get(adj).add(i);
+                edgeCount[i]++;
+            }
+        }
+        
         Queue<Integer> q = new ArrayDeque<>();
 
-        // 초기 진입차수가 0인 건물 큐에 추가
         for (int i = 1; i <= N; i++) {
-            buildTime[i] = buildings[i].time;
-            if(inDegree[i] == 0) q.offer(i);
+            if(edgeCount[i] == 0) q.add(i);
         }
 
         while(!q.isEmpty()) {
-            int current = q.poll();
+            int node = q.poll();
+            ArrayList<Integer> adjs = graph.get(node);
 
-            // 현재 건물을 선수건물로 가지는 모든 건물 검사
-            for (int i = 1; i <= N; i++) {
-                if (buildings[i].pre.contains(current)) {
-                    buildTime[i] = Math.max(buildTime[i],
-                            buildTime[current] + buildings[i].time);
-                    if(--inDegree[i] == 0) {
-                        q.offer(i);
-                    }
-                }
+            for (int adj : adjs) {
+                edgeCount[adj]--;
+                totalBuildTime[adj] = Math.max(totalBuildTime[adj], totalBuildTime[node] + buildTime[adj]);
+                if(edgeCount[adj] == 0) q.add(adj);
             }
         }
 
         for(int i = 1; i <= N; i++) {
-            sb.append(buildTime[i]).append('\n');
+            sb.append(totalBuildTime[i]).append('\n');
         }
-        System.out.print(sb);
+
+        System.out.print(sb.toString());
     }
 }

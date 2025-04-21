@@ -16,6 +16,7 @@ public class Main {
             if (this.age>p.age) return 1;
             else if(this.age<p.age) return -1;
             else return 0;
+            //else return this.name.compareTo(p.name);
         }
     }
     public static void main(String[] args) throws Exception {

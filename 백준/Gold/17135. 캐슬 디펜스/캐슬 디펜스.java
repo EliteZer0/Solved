@@ -141,35 +141,34 @@ public class Main {
     }
     
     // 특정 궁수의 공격 대상을 찾는 함수
-    private static Point findTarget(int[][] gamemap, int archerPos) {
-        // 가장 가까운 거리부터 탐색
-        for (int d = 1; d <= D; d++) {
-            // 같은 거리에 있는 적들 저장 (왼쪽부터 처리하기 위해)
-            List<Point> sameDistanceTargets = new ArrayList<>();
-            
-            // d 거리에 있는 모든 가능한 위치 탐색
-            for (int c = Math.max(0, archerPos - d); c <= Math.min(M - 1, archerPos + d); c++) {
-                // c좌표에 대한 r좌표 계산 (거리 d를 만족하는)
-                int remainingDist = d - Math.abs(archerPos - c);
-                int r = N - remainingDist;
-                
-                // 맵 범위 내이고 적이 있는지 확인
-                if (r >= 0 && r < N && gamemap[r][c] == 1) {
-                    int distance = Math.abs(N - r) + Math.abs(archerPos - c);
-                    if (distance <= D) {
-                        sameDistanceTargets.add(new Point(r, c, distance));
-                    }
+    private static Point findTarget(int[][] gamemap, int archerCol) {
+    boolean[][] visited = new boolean[N][M];
+    Queue<Point> queue = new LinkedList<>();
+    queue.offer(new Point(N, archerCol, 0));
+
+    int[] dr = {0, -1, 0};  // 왼, 위, 오 방향
+    int[] dc = {-1, 0, 1};
+
+    while (!queue.isEmpty()) {
+        Point now = queue.poll();
+        for (int dir = 0; dir < 3; dir++) {
+            int nr = now.r + dr[dir];
+            int nc = now.c + dc[dir];
+            int nd = now.distance + 1;
+
+            if (nr >= 0 && nr < N && nc >= 0 && nc < M && !visited[nr][nc]) {
+                visited[nr][nc] = true;
+                if (gamemap[nr][nc] == 1 && nd <= D) {
+                    return new Point(nr, nc, nd);
+                }
+                if (nd < D) {
+                    queue.offer(new Point(nr, nc, nd));
                 }
             }
-            
-            // 같은 거리에 있는 적이 있으면 가장 왼쪽(열 번호가 작은) 적 선택
-            if (!sameDistanceTargets.isEmpty()) {
-                // 열 기준 정렬
-                sameDistanceTargets.sort(Comparator.comparingInt(p -> p.c));
-                return sameDistanceTargets.get(0);
-            }
         }
-        
-        return null;  // 공격 가능한 적이 없음
     }
+
+    return null;
+}
+
 }

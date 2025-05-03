@@ -1,12 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-/**
- * 캐슬 디펜스 - 백준 17135번
- * N: 맵의 세로 크기
- * M: 맵의 가로 크기
- * D: 공격 사거리
- */
 public class Main {
     // 맵 크기와 사거리 관련 변수
     static int N, M, D;
@@ -44,13 +38,9 @@ public class Main {
         System.out.println(MAX);
     }
     
-    /**
-     * 궁수 위치 조합을 선택하는 재귀 함수
-     * @param count 현재까지 선택한 궁수 수
-     * @param start 선택 시작 인덱스
-     */
+    // 궁수 위치 조합을 선택
     public static void selectArcherPositions(int count, int start) {
-        // 기저 조건: 3명의 궁수가 모두 선택됨
+        // 3명의 궁수가 모두 선택됨
         if (count == 3) {
             MAX = Math.max(MAX, simulateGame());
             return;
@@ -72,46 +62,34 @@ public class Main {
         int enemiesKilled = 0;
         
         // 맵 복사본 생성
-        int[][] gamemap = new int[N][M];
+        int[][] gamemap = new int[N][];
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                gamemap[i][j] = map[i][j];
-            }
+            gamemap[i] = new int[M];
+            System.arraycopy(map[i], 0, gamemap[i], 0, M);
         }
         
         // 모든 적이 사라질 때까지 게임 진행
         for (int turn = 0; turn < N; turn++) {
             // 이번 턴에 제거할 적의 위치를 저장
-            List<int[]> targetsToRemove = new ArrayList<>();
+            Set<Point> targetsToRemove = new HashSet<>();
             
             // 각 궁수에 대해 공격 대상 선택
             for (int archerIdx = 0; archerIdx < 3; archerIdx++) {
                 int archerPos = archers[archerIdx];
                 
                 // 가장 가까운 적부터 공격
-                int[] target = findTarget(gamemap, archerPos);
+                Point target = findTarget(gamemap, archerPos);
                 
                 // 공격 대상이 있으면 목록에 추가
                 if (target != null) {
-                    // 중복된 타겟이 없는지 확인
-                    boolean isDuplicate = false;
-                    for (int[] existingTarget : targetsToRemove) {
-                        if (existingTarget[0] == target[0] && existingTarget[1] == target[1]) {
-                            isDuplicate = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!isDuplicate) {
-                        targetsToRemove.add(target);
-                    }
+                    targetsToRemove.add(target);
                 }
             }
             
             // 선택된 적들 제거 및 카운트 증가
-            for (int[] target : targetsToRemove) {
-                int r = target[0];
-                int c = target[1];
+            for (Point target : targetsToRemove) {
+                int r = target.r;
+                int c = target.c;
                 
                 if (gamemap[r][c] == 1) {
                     gamemap[r][c] = 0;  // 적 제거
@@ -126,62 +104,70 @@ public class Main {
         return enemiesKilled;
     }
     
-    /**
-     * 적들을 아래로 한 칸씩 이동시키는 함수
-     * 맨 아래 줄(N-1)의 적들은 맵에서 사라짐
-     * @param gamemap 게임 맵
-     */
+    // 적들을 아래로 한 칸씩 이동시키는 함수
+    // 맨 아래 줄(N-1)의 적들은 맵에서 사라짐
     private static void moveEnemies(int[][] gamemap) {
         // 아래 행부터 위로 이동 (덮어쓰기 방지)
         for (int i = N - 1; i > 0; i--) {
-            for (int j = 0; j < M; j++) {
-                gamemap[i][j] = gamemap[i - 1][j];
-            }
+            System.arraycopy(gamemap[i-1], 0, gamemap[i], 0, M);
         }
         
         // 첫 번째 행은 비움
-        for (int j = 0; j < M; j++) {
-            gamemap[0][j] = 0;
+        Arrays.fill(gamemap[0], 0);
+    }
+    
+    // 좌표 저장을 위한 Point 클래스
+    static class Point {
+        int r, c, distance;
+        
+        Point(int r, int c, int distance) {
+            this.r = r;
+            this.c = c;
+            this.distance = distance;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Point point = (Point) o;
+            return r == point.r && c == point.c;
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(r, c);
         }
     }
     
-    /**
-     * 특정 궁수의 공격 대상을 찾는 함수
-     * @param gamemap 게임 맵
-     * @param archerPos 궁수 위치 (열)
-     * @return 공격 대상 위치 [행, 열], 대상 없으면 null
-     */
-    private static int[] findTarget(int[][] gamemap, int archerPos) {
-        // 거리, 열 기준으로 정렬된 대상 목록
-        PriorityQueue<int[]> targets = new PriorityQueue<>(
-            (a, b) -> {
-                // a = [행, 열, 거리]
-                // 거리 기준 오름차순
-                if (a[2] != b[2]) return a[2] - b[2];
-                // 거리가 같으면 열 기준 오름차순 (왼쪽 우선)
-                return a[1] - b[1];
-            }
-        );
-        
-        // 모든 맵을 탐색하며 사거리 내의 적 찾기
-        for (int r = 0; r < N; r++) {
-            for (int c = 0; c < M; c++) {
-                if (gamemap[r][c] == 1) {  // 적이 있는 위치
-                    // 궁수와 적 사이의 거리 계산
+    // 특정 궁수의 공격 대상을 찾는 함수
+    private static Point findTarget(int[][] gamemap, int archerPos) {
+        // 가장 가까운 거리부터 탐색
+        for (int d = 1; d <= D; d++) {
+            // 같은 거리에 있는 적들 저장 (왼쪽부터 처리하기 위해)
+            List<Point> sameDistanceTargets = new ArrayList<>();
+            
+            // d 거리에 있는 모든 가능한 위치 탐색
+            for (int c = Math.max(0, archerPos - d); c <= Math.min(M - 1, archerPos + d); c++) {
+                // c좌표에 대한 r좌표 계산 (거리 d를 만족하는)
+                int remainingDist = d - Math.abs(archerPos - c);
+                int r = N - remainingDist;
+                
+                // 맵 범위 내이고 적이 있는지 확인
+                if (r >= 0 && r < N && gamemap[r][c] == 1) {
                     int distance = Math.abs(N - r) + Math.abs(archerPos - c);
-                    
-                    // 사거리 이내인 경우만 후보에 추가
                     if (distance <= D) {
-                        targets.add(new int[]{r, c, distance});
+                        sameDistanceTargets.add(new Point(r, c, distance));
                     }
                 }
             }
-        }
-        
-        // 가장 우선순위 높은 대상 반환 (없으면 null)
-        if (!targets.isEmpty()) {
-            int[] target = targets.poll();
-            return new int[]{target[0], target[1]};  // [행, 열]만 반환
+            
+            // 같은 거리에 있는 적이 있으면 가장 왼쪽(열 번호가 작은) 적 선택
+            if (!sameDistanceTargets.isEmpty()) {
+                // 열 기준 정렬
+                sameDistanceTargets.sort(Comparator.comparingInt(p -> p.c));
+                return sameDistanceTargets.get(0);
+            }
         }
         
         return null;  // 공격 가능한 적이 없음

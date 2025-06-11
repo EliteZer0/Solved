@@ -35,10 +35,10 @@ public class Main {
         islands[1].parent = 0;
         
         for (int i = 2; i <= N; i++) {
-            String[] input = br.readLine().split(" ");
-            char type = input[0].charAt(0);
-            long animals = Long.parseLong(input[1]);
-            int parent = Integer.parseInt(input[2]);
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            char type = st.nextToken().charAt(0);
+            long animals = Long.parseLong(st.nextToken());
+            int parent = Integer.parseInt(st.nextToken());
             
             islands[i].type = type;
             islands[i].animals = animals;

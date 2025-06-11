@@ -17,11 +17,6 @@ public class Main {
             this.blueC = blueC;
             this.moves = moves;
         }
-        
-        // 상태를 구분하기 위한 해시키 생성
-        String getKey() {
-            return redR + "," + redC + "," + blueR + "," + blueC;
-        }
     }
     
     public static void main(String[] args) throws IOException {

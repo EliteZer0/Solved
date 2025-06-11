@@ -1,71 +1,52 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class Main {
-    static class Island {
-        char type;
-        long animals;
-        int parent;
-        List<Integer> children;
-        
-        Island(char type, long animals, int parent) {
-            this.type = type;
-            this.animals = animals;
-            this.parent = parent;
-            this.children = new ArrayList<>();
-        }
-        
-        Island() {
-            this.children = new ArrayList<>();
-        }
-    }
-    
-    public static void main(String[] args) throws IOException {
+    static ArrayList<Integer>[] tree;
+    static char[] types;
+    static long[] values;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
-        
-        Island[] islands = new Island[N + 1];
-        
-        for (int i = 1; i <= N; i++) {
-            islands[i] = new Island();
+
+        tree = new ArrayList[N + 1];
+        types = new char[N + 1];
+        values = new long[N + 1];
+
+        for (int i = 0; i <= N; i++) {
+            tree[i] = new ArrayList<>();
         }
-        
-        islands[1].type = 'S';
-        islands[1].animals = 0;
-        islands[1].parent = 0;
-        
+
+        types[1] = 'S'; // root
+        values[1] = 0;
+
         for (int i = 2; i <= N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
             char type = st.nextToken().charAt(0);
-            long animals = Long.parseLong(st.nextToken());
+            long value = Long.parseLong(st.nextToken());
             int parent = Integer.parseInt(st.nextToken());
-            
-            islands[i].type = type;
-            islands[i].animals = animals;
-            islands[i].parent = parent;
-            islands[parent].children.add(i);
+
+            types[i] = type;
+            values[i] = value;
+            tree[parent].add(i);
         }
-        
-        long result = dfs(1, islands);
-        System.out.println(result);
+
+        System.out.println(dfs(1));
     }
-    
-    static long dfs(int current, Island[] islands) {
-        Island island = islands[current];
-        long sheepFromChildren = 0;
-        
-        for (int child : island.children) {
-            sheepFromChildren += dfs(child, islands);
+
+    static long dfs(int current) {
+        long sum = 0;
+        for (int child : tree[current]) {
+            sum += dfs(child);
         }
-        
-        if (current == 1) {
-            return sheepFromChildren;
-        }
-        
-        if (island.type == 'S') {
-            return island.animals + sheepFromChildren;
+
+        if (types[current] == 'S') {
+            return sum + values[current];
         } else {
-            return Math.max(0, sheepFromChildren - island.animals);
+            return Math.max(0, sum - values[current]);
         }
     }
 }

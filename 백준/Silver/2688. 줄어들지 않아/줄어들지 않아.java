@@ -31,11 +31,6 @@ public class Main {
         return result;
     }
     
-    // n자리 줄어들지 않는 수의 개수 계산
-    private static long solve(int n) {
-        return combination(n + 9, 9);
-    }
-    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
@@ -43,7 +38,7 @@ public class Main {
         
         for (int t = 0; t < T; t++) {
             int n = Integer.parseInt(br.readLine());
-            long result = solve(n);
+            long result = combination(n + 9, 9);
             System.out.println(result);
         }
     }

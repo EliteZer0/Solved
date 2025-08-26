@@ -9,6 +9,7 @@ public class Main {
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
         
         while (true) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,10 +23,10 @@ public class Main {
             }
             
             int result = w(a, b, c);
-            StringBuilder sb = new StringBuilder();
-            sb.append("w(").append(a).append(", ").append(b).append(", ").append(c).append(") = ").append(result);
-            System.out.println(sb.toString());
+            sb.append("w(").append(a).append(", ").append(b).append(", ").append(c).append(") = ").append(result).append("\n");
         }
+        
+        System.out.println(sb.toString());
     }
     
     public static int w(int a, int b, int c) {

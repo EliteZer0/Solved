@@ -12,8 +12,8 @@ class Main {
         int[][] clouds = new int[r][c];
         for(int i = 0; i<r; i++){
             char[] input = br.readLine().toCharArray();
-            Arrays.fill(clouds[i], -1);
             for(int j = 0; j<c; j++){
+                if(clouds[i][j] == 0) clouds[i][j] = -1;
                 if(input[j] == 'c') {
                     clouds[i][j] = 0;
                     for(int k = j+1; k<c; k++){

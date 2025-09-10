@@ -17,7 +17,7 @@ class Main {
                 if(input[j] == 'c') {
                     clouds[i][j] = 0;
                     for(int k = j+1; k<c; k++){
-                        if(j<c-1&&input[j+1] == 'c') break;
+                        if(input[k] == 'c') break;
                         clouds[i][k] = clouds[i][k-1]+1;
                     }
                 }

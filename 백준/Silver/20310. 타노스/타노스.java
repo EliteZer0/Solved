@@ -17,12 +17,33 @@ class Main {
             else zeroCnt++;
         }
 
-        for(int i = 0; i<zeroCnt/2; i++){
-            sb.append("0");
+        int keepZero = zeroCnt / 2;
+        int keepOne = oneCnt / 2;
+
+        boolean[] keep = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            if (input.charAt(i) == '0') {
+                keep[i] = true;
+                keepZero--;
+            }
+            
+            if(keepZero == 0) break;
         }
-        
-        for(int i = 0; i<oneCnt/2; i++){
-            sb.append("1");
+
+        for (int i = len - 1; i >= 0; i--) {
+            if (input.charAt(i) == '1') {
+                keep[i] = true;
+                keepOne--;
+            }
+
+            if(keepOne == 0) break;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (keep[i]) {
+                sb.append(input.charAt(i));
+            }
         }
         
         System.out.println(sb.toString());
